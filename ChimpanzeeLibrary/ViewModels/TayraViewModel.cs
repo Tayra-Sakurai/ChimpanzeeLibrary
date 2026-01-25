@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace ChimpanzeeLibrary.ViewModels
 {
@@ -80,6 +81,8 @@ namespace ChimpanzeeLibrary.ViewModels
             Cash = (double)tayra.Cash;
             Icoca = (double)tayra.Icoca;
             Coop = (double)tayra.Coop;
+            SaveCommand.NotifyCanExecuteChanged();
+            DeleteCommand.NotifyCanExecuteChanged();
         }
 
         [RelayCommand(CanExecute = nameof(CanDeleteOrUpdate))]
@@ -110,20 +113,14 @@ namespace ChimpanzeeLibrary.ViewModels
 
         public bool CanDeleteOrUpdate()
         {
-            var entry = _context.Entry(tayra);
-            if (entry == null)
-            {
+            if (tayra.Id == 0)
                 return false;
-            }
-            else if (entry.State == EntityState.Deleted)
+            foreach (Tayra t in _context.Tayras)
             {
-                return false;
+                if (t.Id == tayra.Id)
+                    return true;
             }
-            else if (entry.State == EntityState.Detached)
-            {
-                return false;
-            }
-            return true;
+            return false;
         }
     }
 }

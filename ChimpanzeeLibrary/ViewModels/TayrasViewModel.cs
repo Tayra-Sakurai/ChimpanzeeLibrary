@@ -2,6 +2,7 @@
 using ChimpanzeeLibrary.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,7 +35,9 @@ namespace ChimpanzeeLibrary.ViewModels
         public async Task LoadAsync()
         {
             Tayras.Clear();
-            await foreach (Tayra item in context.Tayras.AsAsyncEnumerable())
+            List<Tayra> tayraList = await context.Tayras.ToListAsync();
+            tayraList.Sort();
+            foreach (Tayra item in tayraList)
             {
                 Tayras.Add(item);
             }

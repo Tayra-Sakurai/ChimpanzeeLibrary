@@ -74,15 +74,18 @@ namespace ChimpanzeeLibrary.ViewModels
 
         public void InitializeForExistingValue(Tayra value)
         {
-            tayra = value;
-            Date = new DateTimeOffset(tayra.Date.Date);
-            TimeOfDay = tayra.Date.TimeOfDay;
-            Evt = tayra.Event;
-            Cash = (double)tayra.Cash;
-            Icoca = (double)tayra.Icoca;
-            Coop = (double)tayra.Coop;
-            SaveCommand.NotifyCanExecuteChanged();
-            DeleteCommand.NotifyCanExecuteChanged();
+            tayra = _context.Tayras.Find(value.Id);
+            if (tayra != null)
+            {
+                Date = new DateTimeOffset(tayra.Date.Date);
+                TimeOfDay = tayra.Date.TimeOfDay;
+                Evt = tayra.Event;
+                Cash = (double)tayra.Cash;
+                Icoca = (double)tayra.Icoca;
+                Coop = (double)tayra.Coop;
+                SaveCommand.NotifyCanExecuteChanged();
+                DeleteCommand.NotifyCanExecuteChanged();
+            }
         }
 
         [RelayCommand(CanExecute = nameof(CanDeleteOrUpdate))]
@@ -103,6 +106,8 @@ namespace ChimpanzeeLibrary.ViewModels
         public void Delete()
         {
             _context.Remove(tayra);
+            DeleteCommand.NotifyCanExecuteChanged();
+            SaveCommand.NotifyCanExecuteChanged();
         }
 
         [RelayCommand]

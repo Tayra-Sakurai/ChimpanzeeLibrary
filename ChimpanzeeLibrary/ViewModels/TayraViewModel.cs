@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChimpanzeeLibrary.ViewModels
 {
@@ -15,8 +16,6 @@ namespace ChimpanzeeLibrary.ViewModels
         private readonly ChimpanzeeContext _context;
 
         private Tayra tayra;
-
-        private bool canDelete = false;
 
         [ObservableProperty]
         private DateTimeOffset date;
@@ -63,11 +62,10 @@ namespace ChimpanzeeLibrary.ViewModels
             Cash = (double)tayra.Cash;
             Icoca = (double)tayra.Icoca;
             Coop = (double)tayra.Coop;
-            canDelete = true;
         }
 
-        [RelayCommand]
-        public async Task SaveAsync()
+        [RelayCommand(CanExecute = nameof(CanDeleteOrUpdate))]
+        public void Save()
         {
             tayra.Event = Evt;
             tayra.Cash = (decimal)Cash;
@@ -76,19 +74,38 @@ namespace ChimpanzeeLibrary.ViewModels
             DateTime datetime = Date.Date;
             datetime = datetime.Add(TimeOfDay);
             tayra.Date = datetime;
-            await _context.SaveChangesAsync();
+            _context.Update(tayra);
+            DeleteCommand.NotifyCanExecuteChanged();
         }
 
-        [RelayCommand(CanExecute = nameof(CanDelete))]
-        public async Task DeleteAsync()
+        [RelayCommand(CanExecute = nameof(CanDeleteOrUpdate))]
+        public void Delete()
         {
             _context.Remove(tayra);
+        }
+
+        [RelayCommand]
+        public async Task SaveChangesAsync()
+        {
             await _context.SaveChangesAsync();
         }
 
-        public bool CanDelete()
+        public bool CanDeleteOrUpdate()
         {
-            return canDelete;
+            var entry = _context.Entry(tayra);
+            if (entry == null)
+            {
+                return false;
+            }
+            else if (entry.State == EntityState.Deleted)
+            {
+                return false;
+            }
+            else if (entry.State == EntityState.Detached)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ChimpanzeeLibrary.Contexts;
 using ChimpanzeeLibrary.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,6 +24,7 @@ namespace ChimpanzeeLibrary.ViewModels
             Tayras = new ObservableCollection<Tayra>();
         }
 
+        [RelayCommand]
         public async Task LoadAsync()
         {
             Tayras.Clear();
@@ -30,6 +32,14 @@ namespace ChimpanzeeLibrary.ViewModels
             {
                 Tayras.Add(item);
             }
+        }
+
+        [RelayCommand]
+        public async Task AddAsync()
+        {
+            context.Add(new Tayra());
+            await context.SaveChangesAsync();
+            await LoadAsync();
         }
     }
 }

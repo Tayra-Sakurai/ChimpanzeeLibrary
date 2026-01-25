@@ -24,6 +24,12 @@ namespace ChimpanzeeLibrary.ViewModels
             Tayras = new ObservableCollection<Tayra>();
         }
 
+        public TayrasViewModel(ChimpanzeeContext context)
+        {
+            this.context = context;
+            Tayras = new ObservableCollection<Tayra>();
+        }
+
         [RelayCommand]
         public async Task LoadAsync()
         {

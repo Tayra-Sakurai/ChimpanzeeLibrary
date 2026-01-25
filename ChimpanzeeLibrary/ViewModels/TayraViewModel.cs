@@ -53,6 +53,24 @@ namespace ChimpanzeeLibrary.ViewModels
             InitializeForExistingValue(tayra);
         }
 
+        public TayraViewModel(ChimpanzeeContext context, Tayra tayra)
+        {
+            _context = context;
+            InitializeForExistingValue(tayra);
+        }
+
+        public TayraViewModel(ChimpanzeeContext context)
+        {
+            _context = context;
+            tayra = new Tayra();
+            Date = new(tayra.Date.Date);
+            TimeOfDay= tayra.Date.TimeOfDay;
+            Evt = tayra.Event;
+            Cash = (double)tayra.Cash;
+            Icoca = (double)tayra.Icoca;
+            Coop = (double)tayra.Coop;
+        }
+
         public void InitializeForExistingValue(Tayra value)
         {
             tayra = value;

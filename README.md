@@ -2,7 +2,7 @@
 
 ## Overview
 
-This library is a C# library made to work with [https://github.com/Tayra-Sakurai/BalanceSheet](BalanceSheet).
+This library is a C# library made to work with [BalanceSheet](https://github.com/Tayra-Sakurai/BalanceSheet)
 
 This library is optimised for use with Microsoft SQL Server. 
 
